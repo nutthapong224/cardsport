@@ -13,4 +13,4 @@ services:
     environment:
       NODE_ENV: development
     command: npm run dev
-    network_mode: bridge  # Add this line to use the Docker bridge network
+    network_mode: bridge  

@@ -7,7 +7,8 @@ import Playercard from "./pages/Playercard";
 import Playercardb from "./pages/Playercardb"; 
 import Playercardc from "./pages/Playercardc"; 
 import Playercardd from "./pages/Playercardd";  
-import Playercarde from "./pages/Playercarde";
+import Playercarde from "./pages/Playercarde"; 
+import GoogleSheetdata from "./pages/Googlesheetdata.jsx";
 
 
 function App() {
@@ -16,14 +17,15 @@ function App() {
       <Navbar />
       <div className="container">
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Home />} /> */}
           <Route path="/add" element={<Add />} />
-          <Route path="/edit/:rowIndex" element={<Edit />} /> 
-          <Route path="/playercard/:rowIndex" element={<Playercard />} /> 
-          <Route path="/playercardb/:rowIndex" element={<Playercardb />} /> 
-          <Route path="/playercardc/:rowIndex" element={<Playercardc />} />  
-          <Route path="/playercardd/:rowIndex" element={<Playercardd />} />  
-          <Route path="/playercarde/:rowIndex" element={<Playercarde />} /> 
+          <Route path="/edit/:rowIndex" element={<Edit />} />
+          <Route path="/playercard/:rowIndex" element={<Playercard />} />
+          <Route path="/playercardb/:rowIndex" element={<Playercardb />} />
+          <Route path="/playercardc/:rowIndex" element={<Playercardc />} />
+          <Route path="/playercardd/:rowIndex" element={<Playercardd />} />
+          <Route path="/playercarde/:rowIndex" element={<Playercarde />} />
+          <Route path="/" element={<GoogleSheetdata />} />
         </Routes>
       </div>
     </BrowserRouter>

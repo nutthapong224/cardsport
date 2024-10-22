@@ -13,11 +13,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Build the Vite app
+# Build the Vite app for production
 RUN npm run build
 
 # Expose the port that Vite will run on
 EXPOSE 80
 
-# Start the Vite server
+# Start the Vite server in preview (production) mode
 CMD ["npm", "run", "preview"]

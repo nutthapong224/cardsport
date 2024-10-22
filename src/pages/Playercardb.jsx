@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // To get the row index from the URL
+import Papa from "papaparse";
 import { Box, Card, CardContent, Typography, CardMedia } from "@mui/material";
 import iconimage from "../assets/icon.jpg";
 import b from "../assets/b.png";
@@ -7,34 +8,48 @@ import logo from "../assets/logo.png";
 import qrcode from "../assets/qrcode.png";
 
 const Playercardb = () => {
-  const { rowIndex } = useParams();
-  const [studentData, setStudentData] = useState({
-    type: "",
-    fname: "",
-    lname: "",
-    campus: "",
-    imgurl: "",
-    sporttype: ""
-  });
-
-  const fetchStudentData = async () => {
-    try {
-      const res = await fetch(
-        `https://api.sheetbest.com/sheets/f8b45086-c0c3-4777-9bb1-bba73f0e267a/${rowIndex}`
-      );
-      const data = await res.json();
-      setStudentData(data[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { rowIndex } = useParams(); // Get the row index from the URL
+  const [rowData, setRowData] = useState(null);
 
   useEffect(() => {
-    fetchStudentData();
+    const fetchCSVData = async () => {
+      const url =
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vTA6TGRXnKyGRoBeF52lUpgIKj3851eY4oK9izypZdYW6HEa51keal9_aAO8owBmyAZCUO3gz6m6p6-/pub?output=csv";
+
+      try {
+        const response = await fetch(url);
+        const csvText = await response.text();
+
+        // Parse CSV data using PapaParse
+        Papa.parse(csvText, {
+          header: true,
+          complete: (result) => {
+            const data = result.data;
+            setRowData(data[rowIndex]); // Fetch the row data based on the index
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching CSV:", error);
+      }
+    };
+
+    fetchCSVData();
   }, [rowIndex]);
 
+  // Show loading state while data is being fetched
+  if (!rowData) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Card sx={{ maxWidth: 400, margin: "auto", mt: 2, fontFamily: "'Kanit', sans-serif" }}>
+    <Card
+      sx={{
+        maxWidth: 400,
+        margin: "auto",
+        mt: 2,
+        fontFamily: "'Kanit', sans-serif",
+      }}
+    >
       <CardContent>
         {/* Navbar-like top section */}
         <Box
@@ -59,10 +74,9 @@ const Playercardb = () => {
               fontSize: "10px",
               textAlign: "center",
               mx: 1,
-              fontFamily: "'Kanit', sans-serif", 
-              
-            }} 
-            style={{fontSize:"14px" ,color: "red" }}
+              fontFamily: "'Kanit', sans-serif",
+            }}
+            style={{ fontSize: "14px", color: "red" }}
           >
             การแข่งขัน <br /> กีฬามหาวิทยาลัยเทคโนโลยีราชมงคลล้านนา <br />
           </Typography>
@@ -126,7 +140,39 @@ const Playercardb = () => {
           </h1>
         </Typography>
 
-        {/* Two Images Side by Side */}
+        {/* Student Info */}
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: "12px",
+            fontFamily: "'Kanit', sans-serif",
+          }}
+        >
+          <span style={{ color: "red" }}>ชื่อสกุล : </span>
+          {rowData.fname} {rowData.lname}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: "12px",
+            fontFamily: "'Kanit', sans-serif",
+          }}
+        >
+          <span style={{ color: "red" }}> ตำแหน่ง: </span>
+          {rowData.sporttype}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            fontSize: "12px",
+            fontFamily: "'Kanit', sans-serif",
+          }}
+        >
+          <span style={{ color: "red" }}> หน่วยงาน/สังกัด : </span>
+          {rowData.campus}
+        </Typography>
+
+        {/* Image Section */}
         <Box
           sx={{
             display: "flex",
@@ -135,16 +181,14 @@ const Playercardb = () => {
             mb: 1.5,
           }}
         >
-          {studentData.imgurl && (
-            <CardMedia
-              component="img"
-              height="160"
-              image={studentData.imgurl}
-              alt={`${studentData.fname} ${studentData.lname}`}
-              sx={{ width: "48%" }}
-              style={{ border: "3px solid red" }}
-            />
-          )}
+          <CardMedia
+            component="img"
+            height="160"
+            image={rowData.imgurl} // Assuming rowData contains the image URL
+            alt={`${rowData.fname} ${rowData.lname}`}
+            sx={{ width: "48%" }}
+            style={{ border: "3px solid red" }}
+          />
           <CardMedia
             component="img"
             height="165"
@@ -153,40 +197,6 @@ const Playercardb = () => {
             sx={{ width: "48%" }}
           />
         </Box>
-
-        {/* Student Info */}
-        <Typography
-  variant="body2"
-  sx={{
-    fontSize: "12px",
-    fontFamily: "'Kanit', sans-serif",
-  }}
->
-  <span style={{ color: "red" }}>ชื่อสกุล : </span>
-  {studentData.fname} {studentData.lname}
-</Typography>
-        <Typography
-          variant="body2"
-
-          sx={{
-            fontSize: "12px",
-            fontFamily: "'Kanit', sans-serif",
-          }}
-        > 
-          <span style={{ color: "red" }}> ตำแหน่ง: </span>
-          {studentData.sporttype}
-        </Typography>
-        <Typography
-          variant="body2"
-     
-          sx={{
-            fontSize: "12px",
-            fontFamily: "'Kanit', sans-serif",
-          }}
-        >
-                      <span style={{ color: "red" }}>     หน่วยงาน/สังกัด : </span>
-       {studentData.campus}
-        </Typography>
 
         {/* Footer Section */}
         <Box
@@ -212,12 +222,10 @@ const Playercardb = () => {
               mx: 1,
               fontFamily: "'Kanit', sans-serif",
             }}
-            style={{ color: "red" , fontSize:"13px"}}
+            style={{ color: "red", fontSize: "13px" }}
           >
- 
-              ระหว่างวันที่1-6ธันวาคม 2567 <br />
-              ณ มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาน่าน
-         
+            ระหว่างวันที่1-6ธันวาคม 2567 <br />ณ
+            มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาน่าน
           </Typography>
           <CardMedia
             component="img"
