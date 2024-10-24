@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // To get the row index from the URL
 import Papa from "papaparse";
 import { Box, Card, CardContent, Typography, CardMedia } from "@mui/material";
-import iconimage from "../assets/icon.jpg"; 
+import iconimage from "../assets/icon.jpg";  
+import backcard from "../assets/backcard.png"
 
 import iconimages from "../assets/icons.png";
 import b from "../assets/b.png";
@@ -45,7 +46,8 @@ const Playercardb = () => {
   }
 
   return (
-    <Card
+    <div>
+          <Card
       sx={{
         maxWidth: 400,
         margin: "auto",
@@ -246,12 +248,26 @@ const Playercardb = () => {
             height="80"
             image={qrcode}
             alt="Logo"
-            sx={{ objectFit: "contain", width: "auto", }}
+            sx={{ objectFit: "contain", width: "auto", }} 
           />
         </Box>
       </CardContent>
     </Card> 
-    
+    <CardMedia
+  component="img"
+  src={backcard}
+  alt=""
+  sx={{
+    width: '100%', // Ensure the image scales
+    height: 'auto',
+    maxWidth: 400, // Limit max width to match the card 
+    margin: 'auto',
+    mt: 2, // This will add a margin-top of 20 pixels (2 * 8px = 16px, adjust as needed)
+  }}
+/>
+
+    </div>  
+  
   );
 };
 
